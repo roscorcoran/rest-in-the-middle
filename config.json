@@ -1,8 +1,10 @@
 {
-  "proxy" : {"port":"8000"},
+  "proxy" : {
+    "port": 3128
+  },
   "responseDir" : "./responses",
-  "record" : "false",
-  "overwrite" : "false",
-  "playback" : "true",
-  "enableProxy" : "false"
+  "record" : false,
+  "overwrite" : false,
+  "playback" : false,
+  "enableProxy" : true
 }
