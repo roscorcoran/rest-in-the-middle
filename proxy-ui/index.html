@@ -1,0 +1,56 @@
+
+<!--Define App1-->
+<div ng-app="App" id="App">
+  <!--Menu-->
+  <a ui-sref="home">Home</a> |
+  <a ui-sref="page2">page 2</a> |
+  <a ui-sref="page2.tab1">page 2 tab 1</a> |
+  <a ui-sref="page2.tab2">page 2 tab 2</a>
+
+  <!--templates-->
+  <script type="text/ng-template" id="home.html">
+    <p>Page: {{PageName}}</p>
+    <p>state: <pre>{{stateJSON}}</pre></p>
+    <p>stateParams (Track App2):
+    <pre>{{stateParamsJSON}}</pre></p>
+    <div>
+      {{AppName}} Header
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="page2.html">
+    <p>Page: {{PageName}}</p>
+    <p>state: <pre>{{stateJSON}}</pre></p>
+    <p>stateParams (Track App2):
+    <pre>{{stateParamsJSON}}</pre></p>
+    <div>
+      {{AppName}} Header
+    </div>
+    <div ui-view="tab1"></div>
+    <div ui-view="tab2"></div>
+  </script>
+
+  <script type="text/ng-template" id="tab1.html">
+    <p>Page: {{PageName}}</p>
+    <p>state: <pre>{{stateJSON}}</pre></p>
+    <p>stateParams (Track App2):
+    <pre>{{stateParamsJSON}}</pre></p>
+    <div>
+      {{AppName}} Header
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="tab2.html">
+    <p>Page: {{PageName}}</p>
+    <p>state: <pre>{{stateJSON}}</pre></p>
+    <p>stateParams (Track App2):
+    <pre>{{stateParamsJSON}}</pre></p>
+    <div>
+      {{AppName}} Header
+    </div>
+  </script>
+
+  <div ui-view="home"></div>
+  <div ui-view="page2"></div>
+
+</div>
