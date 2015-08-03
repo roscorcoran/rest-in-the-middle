@@ -2,6 +2,8 @@
 
 ## TODO:
 * HTTPS
-* GET/PUT/POST/DELETE --> DB
+* Express: GET/PUT/POST/DELETE --> DB
 * UI
+
 * Refactor
+* Auth
