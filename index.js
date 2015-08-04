@@ -178,13 +178,6 @@ function startProxy(config) {
         newReq.headers = origRequest.headers;
         newReq.headers['X-Forwarded-For'] = socket.remoteAddress;
         newReq.encoding = null;
-        //sys.log(newReq.headers);
-        //origResponse.writeHead(200, origResponse.headers);
-
-        //newReq.assignSocket(origRequest.socket);
-        //***REMOVED***
-        //***REMOVED***
-        //***REMOVED***
         //sys.log('Making request'.green, options.hostname, options.port, options.path, options.method, options.headers);
         var proxy_request = http.request(newReq, function (res) {
           sys.log("Proxied response: ".green, ip + ": " + res.method + " " + res.url, res.statusCode);
