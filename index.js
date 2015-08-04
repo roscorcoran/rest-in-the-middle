@@ -56,7 +56,6 @@ loadConfig(configFile, function (config) {
   }
 });
 
-
 function getRoute(urlString, routes) {
   var urlObj = url.parse(urlString);
   sys.log('Route: '.green, urlObj.hostname, urlObj.path);
@@ -175,7 +174,7 @@ function startProxy(config) {
             origResponse.end();
           }
         });
-      }else if (action == 'proxy') {
+      } else if (action == 'proxy') {
         sys.log('Proxy Enabled'.green);
         //sys.log('Making request'.green, options.hostname, options.port, options.path, options.method, options.headers);
         var proxy_request = http.request(newReq, function (res) {
