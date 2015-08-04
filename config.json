@@ -1,10 +1,22 @@
 {
-  "proxy" : {
+  "proxy": {
     "port": 3128
   },
-  "responseDir" : "./responses",
-  "record" : false,
-  "overwrite" : false,
-  "playback" : false,
-  "enableProxy" : true
+  "responseDir": "./responses",
+  "record": false,
+  "overwrite": false,
+  "playback": true,
+  "enableProxy": true,
+  "routes": [
+    {
+      "hostname": "roscorcoran.com",
+      "url": "*",
+      "action": "monitor"
+    },
+    {
+      "hostname": "all",
+      "url": "*",
+      "action": "passthrough"
+    }
+  ]
 }

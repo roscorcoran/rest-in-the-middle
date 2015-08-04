@@ -56,29 +56,12 @@ loadConfig(configFile, function (config) {
   }
 });
 
-var routes = [
-  {
-    'hostname': 'www.speedtest.net',
-    'url': '*',
-    'action': 'proxy'
-  },
-  {
-    'hostname': 'roscorcoran.com',
-    'url': '*',
-    'action': 'monitor'
-  },
-  {
-    'hostname': 'all',
-    'url': '*',
-    'action': 'proxy'
-  }
-];
 
-function getRoute(urlString) {
+function getRoute(urlString, routes) {
   var urlObj = url.parse(urlString);
   sys.log('Route: '.green, urlObj.hostname, urlObj.path);
   for (var i = 0; i < routes.length; i++) {
-    if (urlObj.hostname.search(routes[i].hostname) >= 0 || urlObj.hostname == 'all') {
+    if (urlObj.hostname.search(routes[i].hostname) >= 0 || routes[i].hostname == 'all') {
       sys.log('host: MATCHES'.green);
       var pattern = new urlPattern(routes[i].url);
       if (pattern.match(urlObj.path)) {
@@ -152,11 +135,34 @@ function startProxy(config) {
     // pause the socket during authentication so no data is lost
     //socket.pause();
 
+    //origRequest.rejectUnauthorized = false;
+    var newReq = url.parse(origRequest.url);
+    newReq.method = origRequest.method;
+    newReq.headers = origRequest.headers;
+    //newReq.headers['X-Forwarded-For'] = socket.remoteAddress;
+    newReq.encoding = null;
+
     var ip = origRequest.connection.remoteAddress;
     sys.log("Incoming request: ".green, (ip + ": " + origRequest.method + " " + origRequest.url).blue);
-    var action = getRoute(origRequest.url);
+    var action = getRoute(origRequest.url, config.routes);
     if (action) {
-      if (config.playback && action == 'monitor') {
+      if (action == 'passthrough') {
+
+        var proxy_request_pt = http.request(newReq, function (res) {
+          sys.log("Passthrough proxied response: ".green, ip + ": " + res.method + " " + res.url, res.statusCode);
+          res.pause();
+          origResponse.writeHeader(res.statusCode, res.headers);
+          res.pipe(origResponse);
+          res.resume();
+        });
+
+        proxy_request_pt.on('error', function (e) {
+          sys.log('Problem with passthrough proxy request: '.red, e.message);
+        });
+
+        proxy_request_pt.end();
+
+      } else if (config.playback && action == 'monitor') {
         getResponse(origRequest, function (res) {
           if (res) {
             sys.log("Data loaded from fs: ".green);
@@ -169,15 +175,8 @@ function startProxy(config) {
             origResponse.end();
           }
         });
-      }
-      if (config.enableProxy) {
+      }else if (action == 'proxy') {
         sys.log('Proxy Enabled'.green);
-        //origRequest.rejectUnauthorized = false;
-        var newReq = url.parse(origRequest.url);
-        newReq.method = origRequest.method;
-        newReq.headers = origRequest.headers;
-        newReq.headers['X-Forwarded-For'] = socket.remoteAddress;
-        newReq.encoding = null;
         //sys.log('Making request'.green, options.hostname, options.port, options.path, options.method, options.headers);
         var proxy_request = http.request(newReq, function (res) {
           sys.log("Proxied response: ".green, ip + ": " + res.method + " " + res.url, res.statusCode);
@@ -234,7 +233,7 @@ function startProxy(config) {
   }).listen(config.proxy.port);
 }
 
-function stopProxy(){
+function stopProxy() {
   server.close();
 }
 
